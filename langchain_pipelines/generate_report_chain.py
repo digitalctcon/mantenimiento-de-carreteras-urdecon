@@ -1,4 +1,4 @@
-from langchain_huggingface import HuggingFaceEndpoint
+from langchain_openai import ChatOpenAI
 from langchain_core.output_parsers import StrOutputParser
 from langchain.prompts import (
     PromptTemplate,
@@ -6,12 +6,10 @@ from langchain.prompts import (
     HumanMessagePromptTemplate,
     ChatPromptTemplate,
 )
-import os
 import streamlit as st
 
 # VARIABLES, TOKENS AND KEYS
-LLM_MODEL_REPO_ID = "mistralai/Mistral-7B-Instruct-v0.3"
-HF_TOKEN = st.secrets["HF_TOKEN"]
+OPENAI_API_KEY = st.secrets["OPENAI_API_KEY"]
 
 report_structure = """
 - Fecha
@@ -23,11 +21,12 @@ report_structure = """
 # Step 1: Define the System and Human Prompts
 report_system_template_str = """
 Eres un experto en mantenimiento de carreteras. Tu trabajo es generar informes claros y detallados basándote en la información proporcionada por el usuario.
-El informe debe contener los siguientes elementos:
+El informe debe tener la siguiente estructura:
 
 {report_structure}
 
-Por favor, no inventes información y utiliza solo los datos proporcionados por el usuario. Por favor, utiliza un lenguaje de español de España.
+Por favor, no inventes información y utiliza solo los datos proporcionados por el usuario. Si no hay ninguna información para añadir a Descripción detallada del trabajo realizado, escribe "Sin información relevante".
+El formato de tu respuesta debe ser simplemente el informe generado, no añadas más explicaciones. 
 """
 
 report_system_prompt = SystemMessagePromptTemplate(
@@ -62,12 +61,11 @@ report_prompt_template = ChatPromptTemplate(
 )
 
 def initialize_llm():
-    llm = HuggingFaceEndpoint(
-        repo_id=LLM_MODEL_REPO_ID,
-        model_kwargs={
-            "max_length": 2048,
-        },
-        huggingfacehub_api_token=HF_TOKEN,
+    llm = ChatOpenAI(
+        model="gpt-4o-mini",
+        temperature=0,
+        max_tokens=2048,
+        api_key=OPENAI_API_KEY,
     )
     return llm
 

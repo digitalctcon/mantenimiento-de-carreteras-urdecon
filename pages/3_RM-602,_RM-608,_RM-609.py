@@ -1,7 +1,6 @@
-__import__('pysqlite3')
+#__import__('pysqlite3')
 import sys
-sys.modules['sqlite3'] = sys.modules.pop('pysqlite3')
-sys.path.append(r"D:\02_Construccion Digital\01 En ejecucion\Cheque PLN Urdecon\App using langchain\urdecon-pln-mantenimiento-de-carreteras")
+#sys.modules['sqlite3'] = sys.modules.pop('pysqlite3')
 
 import streamlit as st
 import requests
@@ -11,24 +10,31 @@ from langchain_pipelines.generate_report_chain import generate_report
 import os 
 from src.utils import get_channel_id, get_available_tasks, get_tasks_by_project, get_project_description
 from src.utils import store_report_in_chroma
+from openai import OpenAI
+from dotenv import load_dotenv
+
+# Load environment variables from .env file
+load_dotenv()
 
 # VARIABLES, TOKENS AND KEYS
-HF_TOKEN = st.secrets["HF_TOKEN"]
-SLACK_BOT_TOKEN = st.secrets["SLACK_BOT_TOKEN"]
-WHISPER_API_URL = "https://api-inference.huggingface.co/models/openai/whisper-large-v3-turbo"
-LLM_MODEL_REPO_ID = "mistralai/Mistral-7B-Instruct-v0.3"
-
-WHISPER_HEADERS = {"Authorization": f"Bearer {HF_TOKEN}"}
+SLACK_BOT_TOKEN = os.getenv("SLACK_BOT_TOKEN")
+OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 
 # Fetch tasks specific to Proyecto 2
-project_name = "Proyecto 2"
+project_name = "Proyecto 1"
 project_description = get_project_description(project_name)
 task_options = get_tasks_by_project(project_name)
 
-# Functions to interact with Hugging Face APIs
-def query_whisper(audio_bytes):
-    response = requests.post(WHISPER_API_URL, headers=WHISPER_HEADERS, data=audio_bytes)
-    return response.json()
+client = OpenAI()
+
+# Functions to interact with OpenAI API
+def query_whisper(audio_value):
+    transcription = client.audio.transcriptions.create(
+        model="whisper-1",
+        file=audio_value,
+        response_format="text"
+    )
+    return transcription
 
 def send_to_slack(channel, message):
     url = "https://slack.com/api/chat.postMessage"
@@ -49,12 +55,11 @@ if audio_value:
     st.audio(audio_value)
 
     # Step 1: Transcription with Whisper
-    transcription_response = query_whisper(audio_value.read())
-    if "text" in transcription_response:
-        transcription = transcription_response["text"]
+    transcription_response = query_whisper(audio_value)
+    print(transcription_response)
+    if transcription_response:
         st.subheader("Transcripción del audio:")
-        st.write(transcription)
-        #transcription = "Hola, soy Luis, estamos en la carretera que conecta el pueblo con la ciudad, justo en el kilómetro 12. Hemos estado reparando una zona donde el asfalto estaba bastante desgastado y tenía varias grietas profundas. Ya hemos terminado de rellenar dos grietas grandes y aplicado una capa de sellado, pero aún nos queda reparar un tramo de unos 50 metros. El tráfico está siendo desviado temporalmente por un carril alterno, y aunque hay algo de congestión, no hemos tenido incidentes hasta ahora. Por otro lado, notamos que el drenaje en este tramo parece estar obstruido, ya que hay acumulación de agua a un lado de la vía. Quizás sería bueno programar una revisión más detallada para evitar problemas en la temporada de lluvias. Voy a seguir aquí hasta que terminemos la reparación de este tramo. En unas horas te actualizo sobre el avance."
+        st.write(transcription_response)
         
         # Metadata
         metadata = {
@@ -65,7 +70,7 @@ if audio_value:
 
         # Generate report using LangChain's pipeline
         st.write("Generando informe...")
-        informe = generate_report(metadata, transcription)
+        informe = generate_report(metadata, transcription_response)
         st.write(informe)
         # Store the initial report in session state
         if "latest_report" not in st.session_state:
