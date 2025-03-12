@@ -1,4 +1,4 @@
-#pysqlite3-binary
+pysqlite3-binary
 openai==1.66.2
 transformers==4.49.0
 sentence-transformers==3.4.1
