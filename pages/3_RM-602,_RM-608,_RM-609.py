@@ -8,7 +8,7 @@ import datetime
 from langchain_pipelines.generate_report_chain import generate_report
 import os 
 from src.utils import get_channel_id, get_available_tasks, get_tasks_by_project, get_project_description
-from src.utils import store_report_in_chroma
+from src.utils import store_report_in_astradb
 from openai import OpenAI
 from dotenv import load_dotenv
 
@@ -18,8 +18,8 @@ load_dotenv()
 # VARIABLES, TOKENS AND KEYS
 SLACK_BOT_TOKEN = os.getenv("SLACK_BOT_TOKEN")
 
-# Fetch tasks specific to Proyecto 2
-project_name = "Proyecto 1"
+# Fetch tasks specific to Proyecto 1
+project_name = "Proyecto 2"
 project_description = get_project_description(project_name)
 task_options = get_tasks_by_project(project_name)
 
@@ -54,8 +54,9 @@ if audio_value:
 
     # Step 1: Transcription with Whisper
     transcription = query_whisper(audio_value)
+    transcription = "Hola, soy Luis, estamos en la carretera que conecta el pueblo con la ciudad, justo en el kilómetro 12. Hemos estado reparando una zona donde el asfalto estaba bastante desgastado y tenía varias grietas profundas. Ya hemos terminado de rellenar dos grietas grandes y aplicado una capa de sellado, pero aún nos queda reparar un tramo de unos 50 metros. El tráfico está siendo desviado temporalmente por un carril alterno, y aunque hay algo de congestión, no hemos tenido incidentes hasta ahora. Por otro lado, notamos que el drenaje en este tramo parece estar obstruido, ya que hay acumulación de agua a un lado de la vía. Quizás sería bueno programar una revisión más detallada para evitar problemas en la temporada de lluvias. Voy a seguir aquí hasta que terminemos la reparación de este tramo. En unas horas te actualizo sobre el avance."
     if transcription:
-
+        
         # Metadata
         metadata = {
             "nombre_persona": nombre_persona,
@@ -104,7 +105,7 @@ if audio_value:
     informe = st.session_state.latest_report
     informe_slack = informe.replace("**", "*").replace("- ", "• ")
     if st.button("Enviar informe"):
-        store_report_in_chroma(informe, metadata)
+        store_report_in_astradb(informe, metadata)
         slack_response = send_to_slack(slack_channel, informe_slack)
         if slack_response.get("ok"):
             st.success("Informe enviado correctamente.")
