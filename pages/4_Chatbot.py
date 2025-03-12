@@ -1,6 +1,6 @@
-#__import__('pysqlite3')
+__import__('pysqlite3')
 import sys
-#sys.modules['sqlite3'] = sys.modules.pop('pysqlite3')
+sys.modules['sqlite3'] = sys.modules.pop('pysqlite3')
 
 import streamlit as st
 from src.utils import get_channel_id, get_available_tasks, get_tasks_by_project, get_project_description
