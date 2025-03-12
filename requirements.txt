@@ -3,10 +3,8 @@ openai
 transformers
 sentence-transformers
 streamlit
-huggingface-hub
 langchain
 langchain-community
-langchain-huggingface
 langchain-core
 langchain-chroma
 langchain-openai
