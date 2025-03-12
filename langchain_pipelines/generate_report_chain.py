@@ -65,7 +65,6 @@ def initialize_llm():
         model="gpt-4o-mini",
         temperature=0,
         max_tokens=2048,
-        api_key=OPENAI_API_KEY,
     )
     return llm
 
