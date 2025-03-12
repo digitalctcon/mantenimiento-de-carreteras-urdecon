@@ -96,13 +96,13 @@ if audio_value:
 
                 # Generate refined report
                 refined_informe = generate_report(metadata, feedback_prompt)
-                informe = refined_informe
                 st.session_state.latest_report = refined_informe
                 st.subheader("Informe modificado:")
                 st.write(refined_informe)
 
     # Slack Integration
     slack_channel = get_channel_id(tarea)
+    informe = st.session_state.latest_report
     informe_slack = informe.replace("**", "*").replace("- ", "• ")
     if st.button("Enviar informe"):
         store_report_in_chroma(informe, metadata)
