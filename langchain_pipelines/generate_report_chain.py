@@ -8,9 +8,6 @@ from langchain.prompts import (
 )
 import streamlit as st
 
-# VARIABLES, TOKENS AND KEYS
-OPENAI_API_KEY = st.secrets["OPENAI_API_KEY"]
-
 report_structure = """
 - Fecha
 - Responsable
