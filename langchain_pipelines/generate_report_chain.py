@@ -12,7 +12,7 @@ report_structure = """
 - Fecha
 - Responsable
 - Ubicación
-- Descripción detallada del trabajo realizado
+- Descripción
 """
 
 # Step 1: Define the System and Human Prompts
@@ -22,7 +22,7 @@ El informe debe tener la siguiente estructura:
 
 {report_structure}
 
-Por favor, no inventes información y utiliza solo los datos proporcionados por el usuario. Si no hay ninguna información para añadir a Descripción detallada del trabajo realizado, escribe "Sin información relevante".
+Por favor, no inventes información y utiliza solo los datos proporcionados por el usuario. Si no hay ninguna información para añadir a Descripción, escribe "Sin información relevante".
 El formato de tu respuesta debe ser simplemente el informe generado, no añadas más explicaciones. 
 """
 
