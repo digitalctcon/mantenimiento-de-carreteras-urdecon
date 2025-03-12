@@ -10,8 +10,6 @@ from openai import OpenAI
 # Load environment variables from .env file
 load_dotenv()
 
-OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
-
 # Initialize Retrieval Chain
 def get_retrieval_chain():
     """
@@ -35,7 +33,6 @@ def get_retrieval_chain():
         model="gpt-4o-mini",
         temperature=0,
         max_tokens=2048,
-        api_key=OPENAI_API_KEY,
     )
 
     # Create RetrievalQA chain

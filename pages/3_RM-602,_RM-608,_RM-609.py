@@ -17,7 +17,6 @@ load_dotenv()
 
 # VARIABLES, TOKENS AND KEYS
 SLACK_BOT_TOKEN = os.getenv("SLACK_BOT_TOKEN")
-OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 
 # Fetch tasks specific to Proyecto 2
 project_name = "Proyecto 1"
