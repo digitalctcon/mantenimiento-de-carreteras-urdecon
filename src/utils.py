@@ -1,5 +1,4 @@
 import sqlite3
-from langchain_community.vectorstores import Chroma
 from langchain_core.documents import Document
 from langchain_community.embeddings import OpenAIEmbeddings  # Change import to OpenAIEmbeddings
 from langchain_astradb import AstraDBVectorStore
@@ -106,41 +105,6 @@ def get_project_description(project_name):
         return "Descripción no disponible."
     finally:
         conn.close()
-
-def setup_chroma():
-    """Initialize Chroma vector store with OpenAI embeddings."""
-    # Using OpenAI model for embeddings
-    embeddings = OpenAIEmbeddings(model="text-embedding-3-small")
-
-    # Initialize Chroma vector store
-    vectorstore = Chroma(
-        persist_directory="./chroma_db",
-        embedding_function=embeddings,
-        collection_metadata={"hnsw:space": "cosine"},
-    )
-
-    return vectorstore
-
-def store_report_in_chroma(report_text, metadata):
-    """
-    Store a report in the Chroma vector store.
-
-    Args:
-        report_text (str): The main content of the report.
-        metadata (dict): Metadata such as date, responsible person, and task.
-    """
-    vectorstore = setup_chroma()
-
-    # Create a document with report content and metadata
-    document = Document(
-        page_content=report_text,  # The actual report content
-        metadata=metadata          # Metadata like date, person, task
-    )
-
-    # Add the document to the vector store
-    vectorstore.add_documents([document])
-    
-    print("Report stored successfully!")
 
 def setup_astradb():
     """Initialize AstraDB vector store."""
