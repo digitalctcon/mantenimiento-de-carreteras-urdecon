@@ -8,7 +8,7 @@ import datetime
 from langchain_pipelines.generate_report_chain import generate_report
 import os 
 from src.utils import get_channel_id, get_available_tasks, get_tasks_by_project, get_project_description
-from src.utils import store_report_in_chroma
+from src.utils import store_report_in_astradb
 from openai import OpenAI
 from dotenv import load_dotenv
 
@@ -105,7 +105,7 @@ if audio_value:
     informe = st.session_state.latest_report
     informe_slack = informe.replace("**", "*").replace("- ", "• ")
     if st.button("Enviar informe"):
-        store_report_in_chroma(informe, metadata)
+        store_report_in_astradb(informe, metadata)
         slack_response = send_to_slack(slack_channel, informe_slack)
         if slack_response.get("ok"):
             st.success("Informe enviado correctamente.")

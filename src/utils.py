@@ -2,6 +2,17 @@ import sqlite3
 from langchain_community.vectorstores import Chroma
 from langchain_core.documents import Document
 from langchain_community.embeddings import OpenAIEmbeddings  # Change import to OpenAIEmbeddings
+from langchain_astradb import AstraDBVectorStore
+import os
+from dotenv import load_dotenv
+
+# Load environment variables from .env file
+load_dotenv()
+
+# VARIABLES, TOKENS AND KEYS
+ASTRA_DB_API_ENDPOINT = os.getenv("ASTRA_DB_API_ENDPOINT")
+ASTRA_DB_APPLICATION_TOKEN = os.getenv("ASTRA_DB_APPLICATION_TOKEN")
+ASTRA_DB_NAMESPACE = os.getenv("ASTRA_DB_NAMESPACE")
 
 # Function to establish a database connection
 def get_connection():
@@ -130,4 +141,41 @@ def store_report_in_chroma(report_text, metadata):
     vectorstore.add_documents([document])
     
     print("Report stored successfully!")
+
+def setup_astradb():
+    """Initialize AstraDB vector store."""
+    # Using OpenAI model for embeddings
+    embeddings = OpenAIEmbeddings(model="text-embedding-3-small")
+
+    # Initialize AstraDB vector store
+    vectorstore = AstraDBVectorStore(
+        collection_name="urdecontest1",
+        embedding=embeddings,
+        api_endpoint=ASTRA_DB_API_ENDPOINT,
+        token=ASTRA_DB_APPLICATION_TOKEN,
+        namespace=ASTRA_DB_NAMESPACE,
+    )
+
+    return vectorstore
+
+def store_report_in_astradb(report_text, metadata):
+    """
+    Store a report in the AstraDB vector store.
+
+    Args:
+        report_text (str): The main content of the report.
+        metadata (dict): Metadata such as date, responsible person, and task.
+    """
+    vectorstore = setup_astradb()
+
+    # Create a document with report content and metadata
+    document = Document(
+        page_content=report_text,  # The actual report content
+        metadata=metadata          # Metadata like date, person, task
+    )
+
+    # Add the document to the vector store
+    vectorstore.add_documents([document])
+    
+    print("Report stored successfully in AstraDB!")
 

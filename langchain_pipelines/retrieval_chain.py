@@ -1,4 +1,4 @@
-from langchain_chroma import Chroma
+from langchain_astradb import AstraDBVectorStore
 from langchain.chains import RetrievalQA
 import os
 from langchain_openai import OpenAIEmbeddings
@@ -10,20 +10,27 @@ from openai import OpenAI
 # Load environment variables from .env file
 load_dotenv()
 
+# VARIABLES, TOKENS AND KEYS
+ASTRA_DB_API_ENDPOINT = os.getenv("ASTRA_DB_API_ENDPOINT")
+ASTRA_DB_APPLICATION_TOKEN = os.getenv("ASTRA_DB_APPLICATION_TOKEN")
+ASTRA_DB_NAMESPACE = os.getenv("ASTRA_DB_NAMESPACE")
+
 # Initialize Retrieval Chain
 def get_retrieval_chain():
     """
-    Create and return a RetrievalQA chain using Chroma and OpenAI embeddings.
+    Create and return a RetrievalQA chain using AstraDB and OpenAI embeddings.
 
     Returns:
         RetrievalQA: The retrieval-based question-answering chain.
     """
     # Initialize embeddings and vectorstore
     embeddings = OpenAIEmbeddings(model="text-embedding-3-small")
-    vectorstore = Chroma(
-        persist_directory="./chroma_db",
-        embedding_function=embeddings,
-        collection_metadata={"hnsw:space": "cosine"},
+    vectorstore = AstraDBVectorStore(
+        collection_name="urdecontest1",
+        embedding=embeddings,
+        api_endpoint=ASTRA_DB_API_ENDPOINT,
+        token=ASTRA_DB_APPLICATION_TOKEN,
+        namespace=ASTRA_DB_NAMESPACE,
     )
     # Set up retriever
     retriever = vectorstore.as_retriever(search_kwargs={"k": 3})
