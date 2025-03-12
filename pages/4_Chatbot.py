@@ -1,11 +1,14 @@
 #__import__('pysqlite3')
 import sys
 #sys.modules['sqlite3'] = sys.modules.pop('pysqlite3')
-sys.path.append(r"D:\02_Construccion Digital\01 En ejecucion\Cheque PLN Urdecon\App using langchain\urdecon-pln-mantenimiento-de-carreteras")
 
 import streamlit as st
 from src.utils import get_channel_id, get_available_tasks, get_tasks_by_project, get_project_description
 from langchain_pipelines.retrieval_chain import retrieve_report
+from dotenv import load_dotenv
+
+# Load environment variables from .env file
+load_dotenv()
 
 st.subheader("Busca información sobre los proyectos en marcha")
 

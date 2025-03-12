@@ -5,7 +5,6 @@ import sys
 import streamlit as st
 import requests
 import datetime
-from huggingface_hub import InferenceClient
 from langchain_pipelines.generate_report_chain import generate_report
 import os 
 from src.utils import get_channel_id, get_available_tasks, get_tasks_by_project, get_project_description
@@ -55,12 +54,9 @@ if audio_value:
     st.audio(audio_value)
 
     # Step 1: Transcription with Whisper
-    transcription_response = query_whisper(audio_value)
-    print(transcription_response)
-    if transcription_response:
-        st.subheader("Transcripción del audio:")
-        st.write(transcription_response)
-        
+    transcription = query_whisper(audio_value)
+    if transcription:
+
         # Metadata
         metadata = {
             "nombre_persona": nombre_persona,
@@ -70,7 +66,7 @@ if audio_value:
 
         # Generate report using LangChain's pipeline
         st.write("Generando informe...")
-        informe = generate_report(metadata, transcription_response)
+        informe = generate_report(metadata, transcription)
         st.write(informe)
         # Store the initial report in session state
         if "latest_report" not in st.session_state:

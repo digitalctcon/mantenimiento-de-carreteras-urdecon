@@ -1,7 +1,7 @@
 import sqlite3
 from langchain_community.vectorstores import Chroma
 from langchain_core.documents import Document
-from langchain_community.embeddings import HuggingFaceEmbeddings
+from langchain_community.embeddings import OpenAIEmbeddings  # Change import to OpenAIEmbeddings
 
 # Function to establish a database connection
 def get_connection():
@@ -97,9 +97,9 @@ def get_project_description(project_name):
         conn.close()
 
 def setup_chroma():
-    """Initialize Chroma vector store with HuggingFace embeddings."""
-    # Using HuggingFace model for embeddings
-    embeddings = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
+    """Initialize Chroma vector store with OpenAI embeddings."""
+    # Using OpenAI model for embeddings
+    embeddings = OpenAIEmbeddings(model="text-embedding-3-small")
 
     # Initialize Chroma vector store
     vectorstore = Chroma(

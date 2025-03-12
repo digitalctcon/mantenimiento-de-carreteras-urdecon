@@ -1,35 +1,41 @@
 from langchain_chroma import Chroma
-from langchain_community.embeddings import HuggingFaceEmbeddings
 from langchain.chains import RetrievalQA
-from langchain_huggingface import HuggingFaceEndpoint
 import os
+from langchain_openai import OpenAIEmbeddings
 import streamlit as st
+from dotenv import load_dotenv
+from langchain_openai import ChatOpenAI
+from openai import OpenAI
 
-LLM_MODEL_REPO_ID = "mistralai/Mistral-7B-Instruct-v0.3"
-HF_TOKEN = st.secrets["HF_TOKEN"]
+# Load environment variables from .env file
+load_dotenv()
+
+OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 
 # Initialize Retrieval Chain
 def get_retrieval_chain():
     """
-    Create and return a RetrievalQA chain using Chroma and HuggingFace embeddings.
+    Create and return a RetrievalQA chain using Chroma and OpenAI embeddings.
 
     Returns:
         RetrievalQA: The retrieval-based question-answering chain.
     """
     # Initialize embeddings and vectorstore
-    embeddings = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
-    vectorstore = Chroma(persist_directory="./chroma_db", embedding_function=embeddings)
-
+    embeddings = OpenAIEmbeddings(model="text-embedding-3-small")
+    vectorstore = Chroma(
+        persist_directory="./chroma_db",
+        embedding_function=embeddings,
+        collection_metadata={"hnsw:space": "cosine"},
+    )
     # Set up retriever
-    retriever = vectorstore.as_retriever(search_kwargs={"k": 5})  # Top 5 matches
+    retriever = vectorstore.as_retriever(search_kwargs={"k": 3})
 
-    # Initialize Hugging Face model via HuggingFaceEndpoint
-    llm = HuggingFaceEndpoint(
-        repo_id=LLM_MODEL_REPO_ID,
-        model_kwargs={
-            "max_length": 2048,
-        },
-        huggingfacehub_api_token=HF_TOKEN,
+    # Initialize OpenAI model via ChatOpenAI
+    llm = ChatOpenAI(
+        model="gpt-4o-mini",
+        temperature=0,
+        max_tokens=2048,
+        api_key=OPENAI_API_KEY,
     )
 
     # Create RetrievalQA chain
