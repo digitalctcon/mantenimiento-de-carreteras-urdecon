@@ -6,6 +6,7 @@ import streamlit as st
 from src.utils import get_channel_id, get_available_tasks, get_tasks_by_project, get_project_description
 from langchain_pipelines.retrieval_chain import retrieve_report
 from dotenv import load_dotenv
+import ast
 
 # Load environment variables from .env file
 load_dotenv()
@@ -20,19 +21,21 @@ if st.button("Enviar"):
     if query:
         # Retrieve reports using the chain
         result = retrieve_report(query)
+        #print(result)
 
         # Display the answer
         st.write("### Respuesta:")
-        st.write(result.get("result"))
+        st.write(result.get("answer", "No se encontró una respuesta adecuada."))
 
         # Display source documents
-        if(DEBUG):
+        if DEBUG:
             st.write("### Documentos relacionados:")
-            source_docs = result.get("source_documents", [])
+            source_docs = result.get("context", [])  # Adjusting to match the correct field
+
             if source_docs:
-                for doc in source_docs:
-                    st.write(f"**Informe:** {doc.page_content}")
-                    st.write(f"**Metadatos:** {doc.metadata}")
+                for i, doc in enumerate(source_docs, 1):
+                    # Directly access the Document object attributes
+                    st.write(f"**Informe {i}:**\n{doc.page_content}")
                     st.write("---")
             else:
                 st.write("No se encontraron documentos relacionados.")
