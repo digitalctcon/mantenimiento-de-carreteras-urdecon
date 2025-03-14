@@ -54,7 +54,6 @@ if audio_value:
 
     # Step 1: Transcription with Whisper
     transcription = query_whisper(audio_value)
-    transcription = "Hola, soy Luis, estamos en la carretera que conecta el pueblo con la ciudad, justo en el kilómetro 12. Hemos estado reparando una zona donde el asfalto estaba bastante desgastado y tenía varias grietas profundas. Ya hemos terminado de rellenar dos grietas grandes y aplicado una capa de sellado, pero aún nos queda reparar un tramo de unos 50 metros. El tráfico está siendo desviado temporalmente por un carril alterno, y aunque hay algo de congestión, no hemos tenido incidentes hasta ahora. Por otro lado, notamos que el drenaje en este tramo parece estar obstruido, ya que hay acumulación de agua a un lado de la vía. Quizás sería bueno programar una revisión más detallada para evitar problemas en la temporada de lluvias. Voy a seguir aquí hasta que terminemos la reparación de este tramo. En unas horas te actualizo sobre el avance."
     if transcription:
         
         # Metadata
