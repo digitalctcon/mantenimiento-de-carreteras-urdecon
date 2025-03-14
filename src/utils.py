@@ -12,6 +12,7 @@ load_dotenv()
 ASTRA_DB_API_ENDPOINT = os.getenv("ASTRA_DB_API_ENDPOINT")
 ASTRA_DB_APPLICATION_TOKEN = os.getenv("ASTRA_DB_APPLICATION_TOKEN")
 ASTRA_DB_NAMESPACE = os.getenv("ASTRA_DB_NAMESPACE")
+ASTRA_DB_COLLECTION_NAME = os.getenv("ASTRA_DB_COLLECTION_NAME")
 
 # Function to establish a database connection
 def get_connection():
@@ -113,7 +114,7 @@ def setup_astradb():
 
     # Initialize AstraDB vector store
     vectorstore = AstraDBVectorStore(
-        collection_name="urdecontest1",
+        collection_name=ASTRA_DB_COLLECTION_NAME,
         embedding=embeddings,
         api_endpoint=ASTRA_DB_API_ENDPOINT,
         token=ASTRA_DB_APPLICATION_TOKEN,

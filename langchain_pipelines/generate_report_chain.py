@@ -8,10 +8,10 @@ from langchain.prompts import (
 )
 
 report_structure = """
-- Fecha
-- Responsable
-- Ubicación
-- Descripción
+- Fecha:
+- Responsable:
+- Ubicación:
+- Descripción:
 """
 
 # Step 1: Define the System and Human Prompts
@@ -22,7 +22,7 @@ El informe debe tener la siguiente estructura:
 {report_structure}
 
 Por favor, no inventes información y utiliza solo los datos proporcionados por el usuario. Si no hay ninguna información para añadir a Descripción, escribe "Sin información relevante".
-El formato de tu respuesta debe ser simplemente el informe generado, no añadas más explicaciones. 
+El formato de tu respuesta debe ser simplemente el informe generado con la estructura coemntanda anteriormente, no añadas más explicaciones. 
 """
 
 report_system_prompt = SystemMessagePromptTemplate(
@@ -38,7 +38,7 @@ Contexto proporcionado sobre la tarea realizada:
 Fecha: {fecha}
 Responsable: {nombre_persona}
 Ubicación: {ubicacion}
-Información detallada: {transcription}
+Descripción: {transcription}
 
 Esta Información detallada viene de un audio, por lo que puede haber errores en la transcripción. Tenlo en cuenta a la hora de generar el informe y arregla lo que sea necesario.
 """
