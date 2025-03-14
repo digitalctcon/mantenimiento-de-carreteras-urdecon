@@ -2,7 +2,7 @@ from langchain_core.messages import SystemMessage
 from langgraph.graph import StateGraph, START, MessagesState, END
 from langgraph.checkpoint.memory import MemorySaver
 from langchain_openai import ChatOpenAI
-from langchain_pipelines.retrieval_chain import retrieve
+from langchain_pipelines.retrieval_chain import retriever
 from langgraph.prebuilt import ToolNode, tools_condition
 
 # Initialize the LLM
@@ -27,7 +27,7 @@ def create_chatbot_workflow():
         return {"messages": [response]}
 
     # Step 2: Execute the retrieval.
-    tools = ToolNode([retrieve])
+    tools = ToolNode([retriever])
 
     # Step 3: Generate a response using the retrieved content.
     def generate(state: MessagesState):

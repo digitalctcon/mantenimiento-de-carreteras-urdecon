@@ -23,7 +23,7 @@ vectorstore = AstraDBVectorStore(
 )
 
 @tool(response_format="content_and_artifact")
-def retrieve(query: str):
+def retriever(query: str):
     """Retrieve information related to a query."""
     retrieved_docs = vectorstore.similarity_search(query, k=2)
     serialized = "\n\n".join(
