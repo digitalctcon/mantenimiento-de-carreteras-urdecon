@@ -3,41 +3,43 @@ import sys
 sys.modules['sqlite3'] = sys.modules.pop('pysqlite3')
 
 import streamlit as st
-from src.utils import get_channel_id, get_available_tasks, get_tasks_by_project, get_project_description
-from langchain_pipelines.retrieval_chain import retrieve_report
+from langchain_core.messages import HumanMessage, AIMessage
+from langchain_pipelines.chatbot_chain import create_chatbot_workflow
 from dotenv import load_dotenv
-import ast
 
 # Load environment variables from .env file
 load_dotenv()
 
+# Initialize the chatbot workflow
+chatbot_app = create_chatbot_workflow()
+
 st.subheader("Busca información sobre los proyectos en marcha")
 
-# User input for query
-query = st.text_input("Escribe tu consulta:")
-DEBUG = False
+# Session state for conversation history
+if "thread_id" not in st.session_state:
+    st.session_state["thread_id"] = "chat_thread_1"
 
-if st.button("Enviar"):
-    if query:
-        # Retrieve reports using the chain
-        result = retrieve_report(query)
-        #print(result)
+if "chat_history" not in st.session_state:
+    st.session_state["chat_history"] = []
 
-        # Display the answer
-        st.write("### Respuesta:")
-        st.write(result.get("answer", "No se encontró una respuesta adecuada."))
+# Display chat history
+for msg in st.session_state["chat_history"]:
+    if isinstance(msg, HumanMessage):
+        st.chat_message("user").write(msg.content)
+    elif isinstance(msg, AIMessage):
+        st.chat_message("assistant").write(msg.content)
 
-        # Display source documents
-        if DEBUG:
-            st.write("### Documentos relacionados:")
-            source_docs = result.get("context", [])  # Adjusting to match the correct field
+# Chat input
+if user_input := st.chat_input("Escribe tu consulta aquí..."):
+    # Append user input to history
+    st.session_state["chat_history"].append(HumanMessage(content=user_input))
+    st.chat_message("user").write(user_input)
 
-            if source_docs:
-                for i, doc in enumerate(source_docs, 1):
-                    # Directly access the Document object attributes
-                    st.write(f"**Informe {i}:**\n{doc.page_content}")
-                    st.write("---")
-            else:
-                st.write("No se encontraron documentos relacionados.")
-    else:
-        st.warning("Por favor, introduce una consulta.")
+    # Invoke the chatbot workflow
+    config = {"configurable": {"thread_id": st.session_state["thread_id"]}}
+    result = chatbot_app.invoke({"messages": st.session_state["chat_history"]}, config)
+
+    # Add assistant's response to chat history
+    ai_response = result["messages"][-1]
+    st.session_state["chat_history"].append(ai_response)
+    st.chat_message("assistant").write(ai_response.content)
