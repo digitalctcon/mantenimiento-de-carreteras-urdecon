@@ -1,6 +1,6 @@
 import sqlite3
 from langchain_core.documents import Document
-from langchain_community.embeddings import OpenAIEmbeddings  # Change import to OpenAIEmbeddings
+from langchain_community.embeddings import OpenAIEmbeddings
 from langchain_astradb import AstraDBVectorStore
 import os
 from dotenv import load_dotenv
@@ -17,7 +17,7 @@ ASTRA_DB_NAMESPACE = os.getenv("ASTRA_DB_NAMESPACE")
 def get_connection():
     """Establish a connection to the SQLite database."""
     try:
-        conn = sqlite3.connect("data/db/mantenimiento_de_carreteras.db")  # Adjust path if needed
+        conn = sqlite3.connect("data/db/mantenimiento_de_carreteras.db")
         return conn
     except sqlite3.Error as e:
         print(f"Error connecting to the database: {e}")
@@ -33,7 +33,7 @@ def get_available_tasks():
         cursor = conn.cursor()
         cursor.execute(query)
         results = cursor.fetchall()
-        return [row[0] for row in results]  # Return a list of task names
+        return [row[0] for row in results]
     except sqlite3.Error as e:
         print(f"Error fetching tasks: {e}")
         return []
