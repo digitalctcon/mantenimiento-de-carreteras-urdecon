@@ -1,10 +1,7 @@
 from langchain_astradb import AstraDBVectorStore
 import os
 from langchain_openai import OpenAIEmbeddings
-import streamlit as st
 from dotenv import load_dotenv
-from langchain_openai import ChatOpenAI
-from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.tools import tool
 
 # Load environment variables from .env file

@@ -7,7 +7,7 @@ import requests
 import datetime
 from langchain_pipelines.generate_report_chain import generate_report
 import os 
-from src.utils import get_channel_id, get_available_tasks, get_tasks_by_project, get_project_description
+from src.utils import get_channel_id, get_tasks_by_project, get_project_description
 from src.utils import store_report_in_astradb
 from openai import OpenAI
 from dotenv import load_dotenv

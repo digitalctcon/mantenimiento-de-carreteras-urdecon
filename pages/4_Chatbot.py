@@ -30,7 +30,7 @@ for msg in st.session_state["chat_history"]:
         st.chat_message("assistant").write(msg.content)
 
 # Chat input
-if user_input := st.chat_input("Escribe tu consulta aquí..."):
+if user_input := st.chat_input("Escribe aquí tu consulta..."):
     # Append user input to history
     st.session_state["chat_history"].append(HumanMessage(content=user_input))
     st.chat_message("user").write(user_input)
