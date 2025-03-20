@@ -1,6 +1,6 @@
 import streamlit as st
 
-st.header("Sistema inteligente para la gestión del mantenimiento de carreteras.")
+st.header("Sistema inteligente para la gestión del mantenimiento de carreteras")
 
 st.markdown("""
 Esta aplicación está diseñada para **gestionar proyectos de mantenimiento de carreteras** de manera eficiente.

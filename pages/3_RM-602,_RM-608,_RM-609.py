@@ -1,12 +1,15 @@
-__import__('pysqlite3')
 import sys
-sys.modules['sqlite3'] = sys.modules.pop('pysqlite3')
+import os
+
+# Check if running in Streamlit Cloud
+if os.getenv("CLOUD_SERVER") == "true":
+    __import__('pysqlite3')
+    sys.modules['sqlite3'] = sys.modules.pop('pysqlite3')
 
 import streamlit as st
 import requests
 import datetime
 from langchain_pipelines.generate_report_chain import generate_report
-import os 
 from src.utils import get_channel_id, get_tasks_by_project, get_project_description
 from src.utils import store_report_in_astradb
 from openai import OpenAI
