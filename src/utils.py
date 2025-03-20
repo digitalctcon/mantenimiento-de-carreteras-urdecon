@@ -1,11 +1,5 @@
-import sys
 import os
-
-# Check if running in Streamlit Cloud
-if os.getenv("CLOUD_SERVER") == "true":
-    __import__('pysqlite3')
-    sys.modules['sqlite3'] = sys.modules.pop('pysqlite3')
-
+import sqlite3
 from langchain_core.documents import Document
 from langchain_community.embeddings import OpenAIEmbeddings
 from langchain_astradb import AstraDBVectorStore
