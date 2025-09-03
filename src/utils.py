@@ -131,16 +131,20 @@ def store_report_in_astradb(report_text, metadata):
         report_text (str): The main content of the report.
         metadata (dict): Metadata such as date, responsible person, and task.
     """
-    vectorstore = setup_astradb()
+    try:
+        vectorstore = setup_astradb()
 
-    # Create a document with report content and metadata
-    document = Document(
-        page_content=report_text,  # The actual report content
-        metadata=metadata          # Metadata like date, person, task
-    )
+        # Create a document with report content and metadata
+        document = Document(
+            page_content=report_text,  # The actual report content
+            metadata=metadata          # Metadata like date, person, task
+        )
 
-    # Add the document to the vector store
-    vectorstore.add_documents([document])
-    
-    print("Report stored successfully in AstraDB!")
+        # Add the document to the vector store
+        vectorstore.add_documents([document])
+        
+        print("Report stored successfully in AstraDB!")
+    except Exception as e:
+        print(f"Error storing report in AstraDB: {e}")
+        pass
 
